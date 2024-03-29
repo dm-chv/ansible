@@ -1,0 +1,35 @@
+- name: Remove default Debian bullshit
+  ansible.builtin.apt:
+    name:
+      - apparmor
+      - reportbug
+      - unattended-upgrades
+      - debian-faq
+      - doc-debian
+      - python3-reportbug
+    autoremove: true
+    state: absent
+    purge: true
+
+- name: APT cleanup
+  ansible.builtin.apt:
+    autoremove: true
+    purge: true
+
+- name: Install common packages
+  ansible.builtin.apt:
+    name:
+      - htop
+      - tcpdump
+      - net-tools
+      - mc
+      - mtr-tiny
+      - dnsutils
+      - localepurge
+      - rsyslog
+      - curl
+      - vim
+      - tree
+    state: latest
+    update_cache: true
+    install_recommends: false

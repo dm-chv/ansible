@@ -1,0 +1,16 @@
+---
+- name: Build docker container
+  hosts: docker_build_host
+  become: true
+  roles:
+    # - common
+    # - docker
+    - build
+
+- name: 1C web server in docker container
+  hosts: 1c-mega
+  become: true
+  roles:
+    - common
+    - docker
+    - 1c

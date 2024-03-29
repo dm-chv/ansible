@@ -1,0 +1,39 @@
+- name: create build directory
+  file:
+    path: "{{ role_vars.build.dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: copy Dockerfile
+  copy:
+    src: "{{ item }}"
+    dest: "{{ role_vars.build.dir }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - ./Dockerfile
+    - ./soft
+
+- name: build container image
+  docker_image:
+    name: "{{ role_vars.build.image_name }}:{{ role_vars.build.image_tag }}"
+    source: build
+    build:
+      path: "{{ role_vars.build.dir }}"
+    state: present
+
+- name: archive container image as a tarball
+  docker_image:
+    name: "{{ role_vars.build.image_name }}:{{ role_vars.build.image_tag }}"
+    archive_path: "{{ role_vars.build.dir }}{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
+    source: pull
+    state: present
+
+- name: fetch archived image
+  fetch:
+    src: "{{ role_vars.build.dir }}{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
+    dest: ./soft/{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
+    flat: true
