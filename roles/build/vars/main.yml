@@ -1,6 +1,0 @@
----
-role_vars:
-  build:
-    dir: /storage/build-dockerfile/
-    image_name: chaltsev1c
-    image_tag: 8.3.23.1865

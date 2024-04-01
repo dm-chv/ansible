@@ -1,39 +1,47 @@
 - name: create build directory
   file:
-    path: "{{ role_vars.build.dir }}"
+    path: "{{ group_vars.build.dir }}"
     state: directory
     owner: root
     group: root
     mode: '0755'
 
-- name: copy Dockerfile
+- name: Template a file to storage
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ group_vars.build.dir }}/Dockerfile"
+    mode: '0755'
+
+- name: copy files
   copy:
-    src: "{{ item }}"
-    dest: "{{ role_vars.build.dir }}"
+    src: "./soft"
+    dest: "{{ group_vars.build.dir }}"
     owner: root
     group: root
     mode: '0644'
-  loop:
-    - ./Dockerfile
-    - ./soft
 
 - name: build container image
   docker_image:
-    name: "{{ role_vars.build.image_name }}:{{ role_vars.build.image_tag }}"
+    name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
     source: build
     build:
-      path: "{{ role_vars.build.dir }}"
+      path: "{{ group_vars.build.dir }}"
     state: present
 
-- name: archive container image as a tarball
-  docker_image:
-    name: "{{ role_vars.build.image_name }}:{{ role_vars.build.image_tag }}"
-    archive_path: "{{ role_vars.build.dir }}{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
-    source: pull
-    state: present
+# - name: archive container image as a tarball
+#   docker_image:
+#     name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
+#     archive_path: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
+#     source: pull
+#     state: present
 
+- name: archive container image as a tar
+  community.docker.docker_image_export:
+    name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
+    path: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
+    
 - name: fetch archived image
   fetch:
-    src: "{{ role_vars.build.dir }}{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
-    dest: ./soft/{{ role_vars.build.image_name }}_{{ role_vars.build.image_tag }}.tar"
+    src: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
+    dest: ./soft/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
     flat: true

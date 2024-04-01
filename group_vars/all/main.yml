@@ -1,0 +1,6 @@
+---
+group_vars:
+  build:
+    dir: /storage/build-dockerfile
+    image_name: chaltsev1c
+    version1c: 8.3.23.1865
