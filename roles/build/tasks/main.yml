@@ -1,47 +1,45 @@
-- name: create build directory
+- name: create build {{ host_vars.dir }} directory
   file:
-    path: "{{ group_vars.build.dir }}"
+    path: "{{ host_vars.dir }}"
     state: directory
     owner: root
     group: root
     mode: '0755'
 
-- name: Template a file to storage
+- name: Template a Dockerfile to storage
   ansible.builtin.template:
     src: Dockerfile.j2
-    dest: "{{ group_vars.build.dir }}/Dockerfile"
+    dest: "{{ host_vars.dir }}/Dockerfile"
     mode: '0755'
 
-- name: copy files
+- name: copy 1c install *.deb files
   copy:
     src: "./soft"
-    dest: "{{ group_vars.build.dir }}"
+    dest: "{{ host_vars.dir }}"
     owner: root
     group: root
     mode: '0644'
 
-- name: build container image
+- name: build container image 1C
   docker_image:
-    name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
+    name: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
     source: build
     build:
-      path: "{{ group_vars.build.dir }}"
+      path: "{{ host_vars.dir }}"
     state: present
-
-# - name: archive container image as a tarball
-#   docker_image:
-#     name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
-#     archive_path: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
-#     source: pull
-#     state: present
+  
+- name: Remove 1c install *.deb files
+  ansible.builtin.file:
+    path: "{{ host_vars.dir }}/soft/*.deb"
+    state: absent
 
 - name: archive container image as a tar
   community.docker.docker_image_export:
-    name: "{{ group_vars.build.image_name }}:{{ group_vars.build.version1c }}"
-    path: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
+    name: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
+    path: "{{ host_vars.dir }}/{{ group_vars.image_name }}_{{ group_vars.version1c }}.tar"
     
-- name: fetch archived image
-  fetch:
-    src: "{{ group_vars.build.dir }}/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
-    dest: ./soft/{{ group_vars.build.image_name }}_{{ group_vars.build.version1c }}.tar"
-    flat: true
+- name: Pull image 1c from {{ inventory_hostname }} to the localhost
+  synchronize:
+    mode: pull
+    src:  "{{ host_vars.dir }}/{{ group_vars.image_name }}_{{ group_vars.version1c }}.tar"
+    dest: "./soft/{{ group_vars.image_name }}_{{ group_vars.version1c }}.tar"

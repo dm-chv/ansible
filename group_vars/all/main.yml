@@ -1,6 +1,11 @@
 ---
 group_vars:
-  build:
-    dir: /storage/build-dockerfile
-    image_name: chaltsev1c
-    version1c: 8.3.23.1865
+  image_name: chaltsev1c
+  version1c: 8.3.23.1865
+  containers:
+   - name: Megapolis2023
+     ports: 881
+   - name: megapolis_new
+     ports: 882
+   - name: megapolis_old
+     ports: 883

@@ -1,0 +1,7 @@
+---
+- name: Update apt and install samba
+  ansible.builtin.apt:
+    name:
+      - samba
+      - samba-client
+    state: latest

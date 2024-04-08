@@ -1,0 +1,41 @@
+---
+- name: create {{ host_vars.dir }} directory
+  file:
+    path: "{{ host_vars.dir }}/1c"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: copy db files - 1Cv8.1CD.zip
+  copy:
+    src: "./db/"
+    dest: "{{ host_vars.dir }}/1c"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Unarchive 1Cv8.1CD.zip
+  ansible.builtin.unarchive:
+    src: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
+    dest: "{{ host_vars.dir }}/1c/{{ item.name }}"
+    extra_opts: "-j"
+    remote_src: yes
+  loop: "{{ group_vars.containers }}"
+
+- name: Remove arhive 1Cv8.1CD.zip
+  ansible.builtin.file:
+    path: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
+    state: absent
+  loop: "{{ group_vars.containers }}"
+
+- name: Create container
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    image: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
+    restart_policy: "unless-stopped"
+    volumes:
+      - "{{ host_vars.dir }}/1c/{{ item.name }}:/1c/{{ item.name }}:rw"
+    ports:
+      - "{{ item.ports }}:80"
+  loop: "{{ group_vars.containers }}"

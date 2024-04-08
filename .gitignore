@@ -1,1 +1,3 @@
-/soft
+/soft/*.deb
+/soft/*.tar
+/db/*

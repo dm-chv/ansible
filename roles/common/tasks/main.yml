@@ -22,7 +22,6 @@
       - htop
       - tcpdump
       - net-tools
-      - mc
       - mtr-tiny
       - dnsutils
       - localepurge
@@ -30,6 +29,8 @@
       - curl
       - vim
       - tree
+      - rsync
+      - zip
     state: latest
     update_cache: true
     install_recommends: false
