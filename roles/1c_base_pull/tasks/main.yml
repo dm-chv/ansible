@@ -1,0 +1,23 @@
+---
+# - name: Archive 1Cv8.1CD.zip
+#   community.general.archive:
+#     path: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD"
+#     dest: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
+#     format: zip
+#   loop: "{{ group_vars.containers }}"
+
+- name: Create local directory
+  ansible.builtin.file:
+    path: "./db_pp/{{ item.name }}/"
+    state: directory
+    mode: '1777'
+  register: local_dir
+  delegate_to: localhost
+  loop: "{{ group_vars.containers }}"
+
+- name: Pull image 1c from {{ inventory_hostname }} to the localhost
+  synchronize:
+    mode: pull
+    src:  "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
+    dest: "./db_pp/{{ item.name }}/1Cv8.1CD.zip"
+  loop: "{{ group_vars.containers }}"

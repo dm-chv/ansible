@@ -1,0 +1,3 @@
+---
+host_vars:
+  dir: /storage/1c-mega

@@ -7,11 +7,25 @@
 #     - docker
 #     - build
 
-- name: 1C web server in docker container
-  hosts: 1c-mega
-  become: true
-  roles:
+# - name: 1C web server in docker container
+#   hosts: 1c-mega
+#   become: true
+#   roles:
     # - common
     # - docker
     # - loading_image
-    - 1c
+    # - 1c
+
+- name: Pull Base from server
+  hosts: mega-fvds
+  become: true
+  roles:
+    - common
+    - 1c_base_pull
+
+- name: Push Base to server
+  hosts: mega-office
+  become: true
+  roles:
+    - common
+    - 1c_base_push

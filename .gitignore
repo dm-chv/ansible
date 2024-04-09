@@ -1,3 +1,4 @@
 /soft/*.deb
 /soft/*.tar
 /db/*
+/db_pp/*
