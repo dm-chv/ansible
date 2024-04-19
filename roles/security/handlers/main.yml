@@ -1,0 +1,15 @@
+---
+- name: Restart nftables
+  service:
+    name: nftables
+    state: restarted
+
+- name: Restart rsyslog
+  systemd:
+    name: rsyslog
+    state: restarted
+
+- name: Restart fail2ban
+  systemd:
+    name: fail2ban
+    state: restarted

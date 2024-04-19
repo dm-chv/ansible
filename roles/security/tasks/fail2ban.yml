@@ -1,0 +1,49 @@
+---
+- name: fail2ban | Install fail2ban package
+  ansible.builtin.apt:
+    name:
+      - fail2ban
+    state: latest
+    install_recommends: false
+
+- name: fail2ban | Copy filter file
+  ansible.builtin.template:
+    src: templates/fail2ban/filter_ipsec.conf.j2
+    dest: /etc/fail2ban/filter.d/filter_ipsec.conf
+    mode: '0644'
+    owner: root
+    group: root
+  notify:
+    - Restart fail2ban
+
+- name: fail2ban | Copy action file
+  ansible.builtin.template:
+    src: templates/fail2ban/nftables-common.local.j2
+    dest: /etc/fail2ban/action.d/nftables-common.local
+    mode: '0644'
+    owner: root
+    group: root
+  notify:
+    - Restart fail2ban
+
+- name: fail2ban | Copy jail files
+  ansible.builtin.template:
+    src: templates/jail.conf.j2
+    dest: /etc/fail2ban/jail.conf
+    mode: '0644'
+    owner: root
+    group: root
+  notify:
+    - Restart fail2ban
+
+
+- name: fail2ban | Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: fail2ban | Enable fail2ban service and ensure it's started
+  ansible.builtin.systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+

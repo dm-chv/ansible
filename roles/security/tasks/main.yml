@@ -1,0 +1,6 @@
+---
+- name: Include nftables.yml
+  ansible.builtin.include_tasks: nftables.yml
+
+- name: Include fail2ban.yml
+  ansible.builtin.include_tasks: fail2ban.yml
