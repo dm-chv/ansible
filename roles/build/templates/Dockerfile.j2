@@ -6,6 +6,8 @@ RUN apt update && apt upgrade -y && \
     mkdir /var/www/Megapolis2023 && \
     mkdir /var/www/megapolis_new && \
     mkdir /var/www/megapolis_old && \
+    mkdir /var/www/arcada && \
+    mkdir /var/www/arcada2023 && \
     mkdir /1c/ && \
     mkdir /1c/Megapolis2023 && \
     chown www-data:www-data /1c/Megapolis2023 && \
@@ -13,6 +15,10 @@ RUN apt update && apt upgrade -y && \
     chown www-data:www-data /1c/megapolis_new && \
     mkdir /1c/megapolis_old && \
     chown www-data:www-data /1c/megapolis_old && \
+    mkdir /1c/arcada && \
+    chown www-data:www-data /1c/arcada && \
+    mkdir /1c/arcada2023 && \
+    chown www-data:www-data /1c/arcada2023 && \
     chmod 777 -R /1c/* && \
     apt-get install -y fontconfig imagemagick && \
     apt-get install -y xfonts-utils cabextract && \
@@ -32,5 +38,7 @@ RUN rm -rf /tmp/*
 RUN ./opt/1cv8/x86_64/{{ group_vars.version1c }}/webinst -publish -apache24 -wsdir Megapolis2023 -dir /var/www/Megapolis2023/ -connstr "File=""/1c/Megapolis2023/"";" -confpath /etc/apache2/apache2.conf
 RUN ./opt/1cv8/x86_64/{{ group_vars.version1c }}/webinst -publish -apache24 -wsdir megapolis_new -dir /var/www/megapolis_new/ -connstr "File=""/1c/megapolis_new/"";" -confpath /etc/apache2/apache2.conf
 RUN ./opt/1cv8/x86_64/{{ group_vars.version1c }}/webinst -publish -apache24 -wsdir megapolis_old -dir /var/www/megapolis_old/ -connstr "File=""/1c/megapolis_old/"";" -confpath /etc/apache2/apache2.conf
+RUN ./opt/1cv8/x86_64/{{ group_vars.version1c }}/webinst -publish -apache24 -wsdir megapolis_old -dir /var/www/arcada/ -connstr "File=""/1c/arcada/"";" -confpath /etc/apache2/apache2.conf
+RUN ./opt/1cv8/x86_64/{{ group_vars.version1c }}/webinst -publish -apache24 -wsdir megapolis_old -dir /var/www/arcada2023/ -connstr "File=""/1c/arcada2023/"";" -confpath /etc/apache2/apache2.conf
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
 EXPOSE 80

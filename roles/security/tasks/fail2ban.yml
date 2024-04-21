@@ -6,26 +6,6 @@
     state: latest
     install_recommends: false
 
-- name: fail2ban | Copy filter file
-  ansible.builtin.template:
-    src: templates/fail2ban/filter_ipsec.conf.j2
-    dest: /etc/fail2ban/filter.d/filter_ipsec.conf
-    mode: '0644'
-    owner: root
-    group: root
-  notify:
-    - Restart fail2ban
-
-- name: fail2ban | Copy action file
-  ansible.builtin.template:
-    src: templates/fail2ban/nftables-common.local.j2
-    dest: /etc/fail2ban/action.d/nftables-common.local
-    mode: '0644'
-    owner: root
-    group: root
-  notify:
-    - Restart fail2ban
-
 - name: fail2ban | Copy jail files
   ansible.builtin.template:
     src: templates/jail.conf.j2

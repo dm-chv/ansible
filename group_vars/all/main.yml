@@ -1,11 +1,15 @@
 ---
 group_vars:
   image_name: chaltsev1c
-  version1c: 8.3.23.1865
+  version1c: 8.3.23.2157
   containers:
    - name: Megapolis2023
-     ports: 881
+     ports: 801
    - name: megapolis_new
-     ports: 882
+     ports: 802
    - name: megapolis_old
-     ports: 883
+     ports: 803
+   - name: arkada
+     ports: 804
+   - name: arkada2023
+     ports: 805     

@@ -11,10 +11,12 @@
 #   hosts: 1c-mega
 #   become: true
 #   roles:
-    # - common
-    # - docker
-    # - loading_image
-    # - 1c
+#     - common
+#     - docker
+#     - security
+#     - samba
+#     - loading_image
+#     - 1c
 
 - name: Pull Base from server
   hosts: mega-fvds
@@ -23,9 +25,9 @@
     - common
     - 1c_base_pull
 
-- name: Push Base to server
-  hosts: mega-office
-  become: true
-  roles:
-    - common
-    - 1c_base_push
+# - name: Push Base to server
+#   hosts: 1c-mega
+#   become: true
+#   roles:
+#     - common
+#     - 1c_base_push
