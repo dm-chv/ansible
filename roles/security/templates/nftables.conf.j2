@@ -4,14 +4,8 @@ flush ruleset
 
 table inet filter {
         chain input {
-                type filter hook input priority filter;
-        tcp dport http accept
-        tcp dport 801 drop
-        tcp dport 802 drop
-        tcp dport 803 drop
-        tcp dport 804 drop
-        tcp dport 805 drop
-
+                type filter hook input priority filter; policy drop;
+        iifname "ens3" tcp dport 22 accept
         }
         chain forward {
                 type filter hook forward priority filter;

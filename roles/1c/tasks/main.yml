@@ -1,19 +1,22 @@
 ---
 - name: create {{ host_vars.dir }} directory
   file:
-    path: "{{ host_vars.dir }}/1c"
+    path: "{{ host_vars.dir }}/1c/{{ item.name }}"
     state: directory
     owner: root
     group: root
     mode: '0755'
+  loop: "{{ group_vars.containers }}"
 
 - name: copy db files - 1Cv8.1CD.zip
   copy:
-    src: "./db/"
-    dest: "{{ host_vars.dir }}/1c"
+    src: "./db_pp/{{ item.name }}/1Cv8.1CD.zip"
+    dest: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
     owner: root
     group: root
     mode: '0777'
+  loop: "{{ group_vars.containers }}"
+  ignore_errors: yes
 
 - name: Unarchive 1Cv8.1CD.zip
   ansible.builtin.unarchive:
@@ -37,5 +40,5 @@
     volumes:
       - "{{ host_vars.dir }}/1c/{{ item.name }}:/1c/{{ item.name }}:rw"
     ports:
-      - "{{ item.ports }}:80"
+      - "192.168.10.102:{{ item.ports }}:80" # 0.0.0.0:9000:8000
   loop: "{{ group_vars.containers }}"

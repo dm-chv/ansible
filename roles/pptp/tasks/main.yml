@@ -1,0 +1,18 @@
+---
+- name: pptp | Update apt and install pptp
+  ansible.builtin.apt:
+    name:
+      - pptp-linux
+    state: latest
+
+- name: pptp | Template a ip-up to pptp
+  ansible.builtin.template:
+    src: ip-up.j2
+    dest: "/etc/ppp/ip-up"
+    mode: '0755'
+
+- name: pptp | Template a vpn-config to pptp
+  ansible.builtin.template:
+    src: vpn.j2
+    dest: "/etc/ppp/peers/vpn"
+    mode: '0755'

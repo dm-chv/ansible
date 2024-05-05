@@ -38,6 +38,7 @@
   community.docker.docker_image_export:
     name: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
     path: "{{ host_vars.dir }}/{{ group_vars.image_name }}_{{ group_vars.version1c }}.tar"
+    timeout: 120
     
 - name: Pull image 1c from {{ inventory_hostname }} to the localhost
   synchronize:

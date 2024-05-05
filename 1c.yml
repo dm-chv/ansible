@@ -1,22 +1,12 @@
 ---
-# - name: Build docker image
-#   hosts: docker_build_host
-#   become: true
-#   roles:
-#     - common
-#     - docker
-#     - build
-
-# - name: 1C web server in docker container
-#   hosts: 1c-mega
-#   become: true
-#   roles:
-#     - common
-#     - docker
-#     - security
-#     - samba
-#     - loading_image
-#     - 1c
+- name: Build docker image
+  hosts: docker_build_host
+  become: true
+  roles:
+    - common
+    - docker
+    - build
+  tags: build
 
 - name: Pull Base from server
   hosts: mega-fvds
@@ -24,10 +14,25 @@
   roles:
     - common
     - 1c_base_pull
+  tags: pull
 
-# - name: Push Base to server
-#   hosts: 1c-mega
-#   become: true
-#   roles:
-#     - common
-#     - 1c_base_push
+- name: Push Base to server
+  hosts: 1c-mega
+  become: true
+  roles:
+    - common
+    - 1c_base_push
+  tags: push
+
+- name: 1C web server in docker container
+  hosts: 1c-mega
+  become: true
+  roles:
+    - common
+    - docker
+    - security
+    - samba
+    - pptp
+    - loading_image
+    - 1c
+  tags: 1c
