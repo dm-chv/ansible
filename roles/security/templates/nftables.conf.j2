@@ -2,10 +2,34 @@
 
 flush ruleset
 
+{% set wan_interface_list = [] -%}
+{% set lan_interface_list = [] -%}
+{% for interface in ansible_interfaces -%}
+        {% if ansible_facts[interface]['ipv4']['address'] is defined and ansible_facts[interface]['ipv4']['address'] is ansible.utils.private -%}
+                {{ lan_interface_list.append(interface) -}}
+        {% else -%}
+                {{ wan_interface_list.append(interface) -}}
+        {% endif -%}
+{% endfor -%}
+
 table inet filter {
+        chain base_checks {
+                ct state {established, related} accept comment "allow established connections"
+                ct state invalid drop comment "early drop of invalid connections"
+}
         chain input {
                 type filter hook input priority filter; policy drop;
-        iifname "ens3" tcp dport 22 accept
+                {% for lan_interface in lan_interface_list -%}
+                iifname "{{ lan_interface }}" accept comment "lan interface"
+                {% endfor -%}
+                jump base_checks
+                ip protocol icmp icmp type {echo-request, echo-reply, time-exceeded, parameter-problem, destination-unreachable } limit rate 1000/second accept comment "limit icmp"
+                udp dport { 33434-33534 } limit rate 1000/second accept comment "limit trace-udp"
+                {% for wan_interface in wan_interface_list -%}
+                iifname "{{ wan_interface }}" tcp dport { 22 } accept comment "ssh ports"
+                iifname "{{ wan_interface }}" tcp dport { 1723 } accept comment "pptp_vpn ports from wan to vpnserver"
+                iifname "{{ wan_interface }}" ip protocol { gre } accept comment "pptp_gre from wan to vpnserver"
+                {%- endfor %} 
         }
         chain forward {
                 type filter hook forward priority filter;

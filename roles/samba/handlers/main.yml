@@ -1,0 +1,7 @@
+---
+- name: Restart smbd
+  service:
+    name: smbd
+    daemon_reload: true
+    enabled: true
+    state: restarted

@@ -1,0 +1,6 @@
+---
+host_vars:
+  dir: /storage/ark
+  smbdir: /storage/ark/files
+  namedir: arkapapka
+  vpnuser: "{{ vault_secrets.mega.vpn_user }}-a"

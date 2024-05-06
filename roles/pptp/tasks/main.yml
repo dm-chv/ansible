@@ -16,3 +16,5 @@
     src: vpn.j2
     dest: "/etc/ppp/peers/vpn"
     mode: '0755'
+  notify:
+    - connect vpn

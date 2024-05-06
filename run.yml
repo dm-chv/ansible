@@ -36,3 +36,13 @@
     - loading_image
     - 1c
   tags: 1c
+
+- name: Storage server
+  hosts: storage-stage
+  become: true
+  roles:
+    - common
+    - samba
+    - pptp
+    - security
+  tags: storage

@@ -6,3 +6,4 @@
     mode: '0644'
   notify:
     - Restart nftables
+    - Restart fail2ban

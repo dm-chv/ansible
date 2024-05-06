@@ -1,8 +1,8 @@
-pty "pptp ipipipipi --nolaunchpppd"
+pty "pptp {{ vault_secrets.mega.office_host }} --nolaunchpppd"
 require-mschap-v2
 require-mppe-128
-user 2
-password ""
+user {{ host_vars.vpnuser }}
+password "{{ vault_secrets.mega.vpn_pass }}"
 nodeflate
 nobsdcomp
 noauth

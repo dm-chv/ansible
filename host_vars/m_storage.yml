@@ -1,0 +1,6 @@
+---
+host_vars:
+  dir: /storage/mega
+  smbdir: /storage/mega/files
+  namedir: megapapka
+  vpnuser: "{{ vault_secrets.mega.vpn_user }}-m"
