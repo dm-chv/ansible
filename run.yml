@@ -17,7 +17,7 @@
   tags: pull
 
 - name: Push Base to server
-  hosts: 1c-mega
+  hosts: mega-fvds
   become: true
   roles:
     - common
