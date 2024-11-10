@@ -3,8 +3,8 @@
   hosts: docker_build_host
   become: true
   roles:
-    - common
-    - docker
+    # - common
+    # - docker
     - build
   tags: build
 
