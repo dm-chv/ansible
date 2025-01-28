@@ -1,4 +1,10 @@
 ---
+- name: Stop a container
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    state: stopped
+  loop: "{{ group_vars.containers }}"
+
 - name: Archive 1Cv8.1CD.zip
   community.general.archive:
     path: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD"

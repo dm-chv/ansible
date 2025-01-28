@@ -1,0 +1,6 @@
+- name: Deploy openvpn server and users
+  hosts: openvpn
+  become: true
+  roles:
+    # - common
+    - openvpn

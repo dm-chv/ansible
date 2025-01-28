@@ -1,0 +1,20 @@
+client
+dev tun
+proto {{ vpn_protocol }}
+remote {{ vpn_server_address }} {{ vpn_port }}
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+<ca>
+{{ lookup('file', easy_rsa_dir + '/pki/ca.crt') }}
+</ca>
+<cert>
+{{ lookup('file', easy_rsa_dir + '/pki/issued/' + item.name + '.crt') }}
+</cert>
+<key>
+{{ lookup('file', easy_rsa_dir + '/pki/private/' + item.name + '.key') }}
+</key>
+comp-lzo
+verb 3

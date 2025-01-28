@@ -10,7 +10,7 @@
 
 - name: Pull Base from server
   hosts: mega-fvds
-  become: true
+  # become: true
   roles:
     - common
     - 1c_base_pull

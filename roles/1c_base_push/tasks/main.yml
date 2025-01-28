@@ -17,16 +17,29 @@
     mode: '0777'
   loop: "{{ group_vars.containers }}"
 
+- name: Stop a container
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    state: stopped
+  loop: "{{ group_vars.containers }}"
+
 - name: Unarchive 1Cv8.1CD.zip
   ansible.builtin.unarchive:
     src: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
     dest: "{{ host_vars.dir }}/1c/{{ item.name }}"
     extra_opts: "-j"
     remote_src: yes
+    mode: '0777'
   loop: "{{ group_vars.containers }}"
 
 - name: Remove arhive 1Cv8.1CD.zip
   ansible.builtin.file:
     path: "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
     state: absent
+  loop: "{{ group_vars.containers }}"
+
+- name: Start a container
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    state: started
   loop: "{{ group_vars.containers }}"

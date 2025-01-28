@@ -3,21 +3,21 @@ group_vars:
   image_name: chaltsev1c
   version1c: 8.3.25.1374
   containers:
-   - name: Megapolis2023 # Обновлять только через конфиигуратор
-     ports: 801
-     memory: 4096M
-   - name: megapolis_new
-     ports: 802
-     memory: 1280M
-   - name: megapolis_old
-     ports: 803
-     memory: 1280M
-   - name: arkada
-     ports: 804
-     memory: 1280M
-   - name: arkada2023
-     ports: 805
-     memory: 4096M
+  #  - name: Megapolis2023 # Обновлять только через конфиигуратор
+  #    ports: 801
+  #    memory: 4096M
+  #  - name: megapolis_new
+  #    ports: 802
+  #    memory: 1280M
+  #  - name: megapolis_old
+  #    ports: 803
+  #    memory: 1280M
+  #  - name: arkada
+  #    ports: 804
+  #    memory: 1280M
+  #  - name: arkada2023
+  #    ports: 805
+  #    memory: 4096M
    - name: arkadaZP
      ports: 806
      memory: 2048M
