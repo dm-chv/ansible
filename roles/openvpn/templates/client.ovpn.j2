@@ -8,13 +8,13 @@ persist-key
 persist-tun
 remote-cert-tls server
 <ca>
-{{ lookup('file', easy_rsa_dir + '/pki/ca.crt') }}
+__CA_CERT__
 </ca>
 <cert>
-{{ lookup('file', easy_rsa_dir + '/pki/issued/' + item.name + '.crt') }}
+__CLIENT_CERT__
 </cert>
 <key>
-{{ lookup('file', easy_rsa_dir + '/pki/private/' + item.name + '.key') }}
+__CLIENT_KEY__
 </key>
 comp-lzo
 verb 3
