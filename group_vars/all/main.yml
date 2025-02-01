@@ -18,6 +18,6 @@ group_vars:
   #  - name: arkada2023
   #    ports: 805
   #    memory: 4096M
-   - name: arkadaZP
-     ports: 806
-     memory: 2048M
+  #  - name: arkadaZP
+  #    ports: 806
+  #    memory: 2048M

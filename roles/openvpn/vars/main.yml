@@ -1,3 +1,4 @@
+ssh_port: 22
 openvpn_dir: "/etc/openvpn"
 openvpn_cert_dir: "/etc/openvpn/server"
 easy_rsa_dir: "/usr/share/easy-rsa" # whereis easy-rsa
@@ -5,6 +6,7 @@ client_config_dir: "/tmp/openvpn_clients"
 vpn_server_address: "{{ vault_secrets.mega.ak_vpn_ip }}"
 vpn_protocol: "udp"
 vpn_port: 1194
+vpn_pool: 192.168.162.0
 users:
   - name: "user1"
   - name: "user2"

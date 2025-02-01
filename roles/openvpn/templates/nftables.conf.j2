@@ -1,0 +1,62 @@
+#!/usr/sbin/nft -f
+
+{% set wan_interface_list = [] -%}
+{% set lan_interface_list = [] -%}
+{% for interface in ansible_interfaces -%}
+        {% if ansible_facts[interface]['ipv4']['address'] is defined and ansible_facts[interface]['ipv4']['address'] is ansible.utils.private -%}
+                {{ lan_interface_list.append(interface) -}}
+        {% else -%}
+                {{ wan_interface_list.append(interface) -}}
+        {% endif -%}
+{% endfor -%}
+
+flush ruleset
+
+table inet filter {
+        set fwd_dns_limit {
+                type ipv4_addr
+                size 65535
+                flags dynamic
+                comment "set for IP's from the VPN pool to limit dns packets"
+        }
+        chain base_checks {
+                ct state {established, related} accept comment "allow established connections"
+                ct state invalid log flags all prefix "| VPN-ERR | CONN-BAD | " drop comment "early drop of invalid connections"
+        }
+        chain input {
+                type filter hook input priority filter; policy drop;
+                {% for lan_interface in lan_interface_list -%}
+                iifname "{{ lan_interface }}" accept comment "lan interface"
+                {% endfor -%}
+                jump base_checks
+                ip protocol icmp icmp type {echo-request, echo-reply, time-exceeded, parameter-problem, destination-unreachable } limit rate 1000/second accept comment "limit icmp"
+                udp dport { 33434-33534 } limit rate 1000/second accept comment "limit trace-udp"
+                {% for wan_interface in wan_interface_list -%}
+                iifname "{{ wan_interface }}" {{ vpn_protocol }} dport { {{ vpn_port }} } log prefix "| VPN-INF | CONN-PORT | " accept comment "vpn ports from wan to vpnserver"
+                iifname "{{ wan_interface }}" tcp dport { 22 } log prefix "| SSH | CONN-PORT | " accept comment "SSH ports from wan to vpnserver"
+                {%- endfor %} 
+        }
+        chain forward {
+                type filter hook forward priority filter; policy drop;
+                {% for lan_interface in lan_interface_list -%}
+                {% if lan_interface != "lo" -%}
+                iifname "{{ lan_interface }}" accept comment "lan interface"
+                {% endif -%}
+                {% endfor -%}
+                jump base_checks
+                {% for wan_interface in wan_interface_list -%}
+                ip saddr {{ vpn_pool }}/24 meta l4proto { tcp,udp } th dport 53 add @fwd_dns_limit { ip saddr limit rate 20/second burst 20 packets } counter accept comment "limit outgoing dns for each IP in the VPN pool"
+                ip saddr {{ vpn_pool }}/24 accept comment "Allow VPN clients to reach the internet"
+                {%- endfor %} 
+        }
+        chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
+                
+        }
+        chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
+                {% for wan_interface in wan_interface_list -%}
+                oifname "{{ wan_interface }}" ip saddr {{ vpn_pool }}/24  counter masquerade comment "allow authorized IP's to masquerade"
+                {%- endfor %} 
+        }
+}

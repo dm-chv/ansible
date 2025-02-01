@@ -1,0 +1,21 @@
+---
+- name: Gateway | Enable ipv4 forwarding, disable ipv6
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    reload: true
+    state: "present"
+  with_items:
+    - { name: net.ipv4.ip_forward, value: 1 }
+    - { name: net.ipv6.conf.all.disable_ipv6, value: 1 }
+  loop_control:
+    loop_var: item
+
+- name: nftables | Load nftables config
+  ansible.builtin.template:
+    src: nftables.conf.j2
+    dest: /etc/nftables.conf
+    mode: '0644'
+  notify:
+    - Restart nftables

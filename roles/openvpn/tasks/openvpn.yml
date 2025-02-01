@@ -1,0 +1,132 @@
+# ---
+# - name: Install OpenVPN and Easy-RSA
+#   package:
+#     name:
+#       - openvpn
+#       - easy-rsa
+#     state: present
+#   when: ansible_facts.os_family == 'Debian' or ansible_facts.os_family == 'RedHat'
+
+# - name: Ensure Easy-RSA directory exists
+#   file:
+#     path: "{{ easy_rsa_dir }}"
+#     state: directory
+
+# - name: Initialize PKI if not already initialized
+#   shell: "{{ easy_rsa_dir }}/easyrsa init-pki"
+#   args:
+#     chdir: "{{ easy_rsa_dir }}"
+#     creates: "{{ easy_rsa_dir }}/pki"
+
+# - name: Ensure Easy-RSA vars file exists
+#   template:
+#     src: "vars.j2"
+#     dest: "{{ easy_rsa_dir }}/pki/vars"
+
+# - name: Build CA if not already built
+#   shell: |
+#     export EASYRSA_PKI="{{ easy_rsa_dir }}/pki"
+#     export EASYRSA_VARS_FILE="{{ easy_rsa_dir }}/pki/vars"
+#     if [ ! -f "{{ easy_rsa_dir }}/pki/ca.crt" ]; then
+#       {{ easy_rsa_dir }}/easyrsa build-ca nopass
+#     fi
+#   args:
+#     chdir: "{{ easy_rsa_dir }}"
+#     creates: "{{ easy_rsa_dir }}/pki/ca.crt"
+
+# - name: Ensure CA certificate exists
+#   stat:
+#     path: "{{ easy_rsa_dir }}/pki/ca.crt"
+#   register: ca_cert_stat
+
+# - name: Read CA certificate from server
+#   slurp:
+#     src: "{{ easy_rsa_dir }}/pki/ca.crt"
+#   register: ca_cert
+#   when: ca_cert_stat.stat.exists
+
+# - name: Generate server certificate and key if not present
+#   shell: "{{ easy_rsa_dir }}/easyrsa build-server-full server nopass"
+#   args:
+#     chdir: "{{ easy_rsa_dir }}"
+#     creates: "{{ easy_rsa_dir }}/pki/issued/server.crt"
+
+# - name: Generate DH parameters if not exist
+#   shell: openssl dhparam -out pki/dh.pem 2048
+#   args:
+#     chdir: "{{ easy_rsa_dir }}"
+#     creates: "{{ easy_rsa_dir }}/pki/dh.pem"
+
+# - name: Copy server certificates to OpenVPN directory
+#   copy:
+#     src: "{{ easy_rsa_dir }}/pki/{{ item.src }}"
+#     dest: "{{ openvpn_dir }}/{{ item.dest }}"
+#     remote_src: true
+#     owner: root
+#     group: root
+#     mode: '0644'
+#   loop:
+#     - { src: ca.crt, dest: server/ca.crt }
+#     - { src: issued/server.crt, dest: server/server.crt }
+#     - { src: private/server.key, dest: server/server.key }
+#     - { src: dh.pem, dest: server/dh.pem }
+#   notify: Restart OpenVPN
+
+- name: Ensure OpenVPN server configuration
+  template:
+    src: "server.conf.j2"
+    dest: "{{ openvpn_dir }}/server.conf"
+  notify: Restart OpenVPN
+
+# - name: Copy client configuration template to server
+#   template:
+#     src: "client.ovpn.j2"
+#     dest: "{{ client_config_dir }}/{{ item.name }}.ovpn"
+#   with_items: "{{ users }}"
+
+# - name: Read CA certificate from server
+#   slurp:
+#     src: "{{ easy_rsa_dir }}/pki/ca.crt"
+#   register: ca_cert
+
+# - name: Read client certificates from server
+#   slurp:
+#     src: "{{ easy_rsa_dir }}/pki/issued/{{ item.name }}.crt"
+#   register: client_certs
+#   with_items: "{{ users }}"
+
+# - name: Read client private keys from server
+#   slurp:
+#     src: "{{ easy_rsa_dir }}/pki/private/{{ item.name }}.key"
+#   register: client_keys
+#   with_items: "{{ users }}"
+
+# - name: Replace placeholders in client configuration
+#   block:
+#     - name: Replace CA certificate placeholder
+#       replace:
+#         path: "{{ client_config_dir }}/{{ item.name }}.ovpn"
+#         regexp: "__CA_CERT__"
+#         replace: "{{ ca_cert.content | b64decode }}"
+#       with_items: "{{ users }}"
+
+#     - name: Replace client certificate placeholder
+#       replace:
+#         path: "{{ client_config_dir }}/{{ item.name }}.ovpn"
+#         regexp: "__CLIENT_CERT__"
+#         replace: "{{ client_certs.results | selectattr('item.name', 'equalto', item.name) | map(attribute='content') | first | b64decode }}"
+#       with_items: "{{ users }}"
+
+#     - name: Replace client key placeholder
+#       replace:
+#         path: "{{ client_config_dir }}/{{ item.name }}.ovpn"
+#         regexp: "__CLIENT_KEY__"
+#         replace: "{{ client_keys.results | selectattr('item.name', 'equalto', item.name) | map(attribute='content') | first | b64decode }}"
+#       with_items: "{{ users }}"
+
+# - name: Fetch client configuration files to local machine
+#   fetch:
+#     src: "{{ client_config_dir }}/{{ item.name }}.ovpn"
+#     dest: "~/{{ item.name }}.ovpn"
+#     flat: yes
+#   with_items: "{{ users }}"

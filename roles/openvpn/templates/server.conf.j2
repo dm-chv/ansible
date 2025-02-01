@@ -19,6 +19,8 @@ log-append /var/log/openvpn.log
 verb 1
 explicit-exit-notify 1
 client-to-client
-push "redirect-gateway def1 bypass-dhcp"
+push "redirect-gateway def1"
+push "route {{ vault_secrets.mega.ak_vpn_ip }} 255.255.255.0 net_gateway"
+push "route {{ vpn_pool }} 255.255.255.0"
 push "dhcp-option DNS 8.8.8.8"
 push "dhcp-option DNS 8.8.4.4"
