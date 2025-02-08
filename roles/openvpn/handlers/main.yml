@@ -2,9 +2,8 @@
 - name: Restart OpenVPN
   ansible.builtin.systemd:
     name: openvpn
-    # state: reloaded
+    enabled: true
     state: restarted
-    daemon-reload: true
 
 - name: Restart nftables
   service:

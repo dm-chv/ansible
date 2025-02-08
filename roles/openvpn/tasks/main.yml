@@ -4,5 +4,5 @@
 - name: Include gateway.yml
   ansible.builtin.include_tasks: gateway.yml
 
-# - name: Include fail2ban.yml
-#   ansible.builtin.include_tasks: fail2ban.yml
+- name: Include fail2ban.yml
+  ansible.builtin.include_tasks: fail2ban.yml
