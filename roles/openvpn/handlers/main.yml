@@ -14,3 +14,13 @@
   systemd:
     name: fail2ban
     state: restarted
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start VPN Bot service
+  systemd:
+    name: vpn_bot
+    enabled: yes
+    state: started

@@ -1,0 +1,50 @@
+- name: Remove existing Go installation
+  file:
+    path: "{{ go_install_path }}"
+    state: absent
+
+- name: Download Go binary
+  get_url:
+    url: "{{ go_download_url }}"
+    dest: "/tmp/{{ go_tarball }}"
+    mode: '0644'
+
+- name: Extract Go archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ go_tarball }}"
+    dest: "/usr/local"
+    remote_src: yes
+
+- name: install-golang | Create soft link to golang
+  ansible.builtin.file:
+    src: /usr/local/go/bin/go
+    dest: /usr/bin/go
+    state: link
+    force: true
+
+- name: install-golang | Ensure go goose is installed
+  ansible.builtin.command:
+    cmd: "go install github.com/pressly/goose/v3/cmd/goose@{{ goose_version }}"
+  changed_when: true
+
+- name: install-golang | Create soft link to golang
+  ansible.builtin.file:
+    path: /root/go/
+    state: directory 
+    recurse: yes
+    mode: "755"
+
+- name: install-golang | Create soft link to golang
+  ansible.builtin.file:
+    src: /root/go/bin/goose
+    dest: /usr/bin/goose
+    state: link
+    force: true
+
+- name: Verify Go installation
+  command: "/usr/local/go/bin/go version"
+  register: go_version_check
+
+- name: Show installed Go version
+  debug:
+    msg: "{{ go_version_check.stdout }}"

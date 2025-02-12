@@ -6,3 +6,6 @@
 
 - name: Include fail2ban.yml
   ansible.builtin.include_tasks: fail2ban.yml
+
+- name: Include deploy_vpn_bot.yml
+  ansible.builtin.include_tasks: deploy_vpn_bot.yml

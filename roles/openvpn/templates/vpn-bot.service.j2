@@ -1,0 +1,12 @@
+[Unit]
+Description=vpn-bot
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ vpn_bot.dir }}
+ExecStart={{ vpn_bot.dir }}/vpn-bot
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -2,5 +2,5 @@
   hosts: openvpn
   become: true
   roles:
-    # - common
+    - common
     - openvpn

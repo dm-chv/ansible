@@ -1,0 +1,5 @@
+- name: Instal Go lang to localhost
+  hosts: localhost
+  become: true
+  roles:
+    - go-install-local

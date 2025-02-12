@@ -6,7 +6,7 @@ cert {{ openvpn_cert_dir }}/server.crt
 key {{ openvpn_cert_dir }}/server.key
 dh {{ openvpn_cert_dir }}/dh.pem
 topology subnet
-server 192.168.162.0 255.255.255.0
+server 192.168.172.0 255.255.255.0
 ifconfig-pool-persist {{ openvpn_cert_dir }}/ipp.txt
 keepalive 10 120
 persist-key
@@ -24,3 +24,4 @@ push "route {{ vault_secrets.mega.ak_vpn_ip }} 255.255.255.0 net_gateway"
 push "route {{ vpn_pool }} 255.255.255.0"
 push "dhcp-option DNS 8.8.8.8"
 push "dhcp-option DNS 8.8.4.4"
+crl-verify {{ easy_rsa_dir }}/pki/crl.pem

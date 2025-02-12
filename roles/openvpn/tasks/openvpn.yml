@@ -78,6 +78,19 @@
     dest: "{{ openvpn_dir }}/server.conf"
   notify: Restart OpenVPN
 
+- name: Build new client certificate
+  command: "{{ easy_rsa_dir }}/easyrsa build-client-full {{ item.name }} nopass"
+  args:
+    chdir: "{{ easy_rsa_dir }}"
+    creates: "{{ easy_rsa_dir }}/pki/issued/{{ item.name }}.crt"
+  with_items: "{{ users }}"
+
+- name: Easyrsa gen-crl
+  command: "{{ easy_rsa_dir }}/easyrsa gen-crl"
+  args:
+    chdir: "{{ easy_rsa_dir }}"
+    creates: "{{ easy_rsa_dir }}/pki/issued/{{ item.name }}.crt"
+
 - name: Ensure client-config directory exists
   file:
     path: "{{ client_config_dir }}"

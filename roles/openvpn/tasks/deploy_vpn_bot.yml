@@ -1,0 +1,28 @@
+- name: vpn-bot | Update directories
+  ansible.builtin.file:
+    path: "{{ vpn_bot.dir }}"
+    state: directory
+    recurse: true
+    mode: '0744'
+
+- name: vpn-bot | Update configuration files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ vpn_bot.dir }}/{{ item }}"
+    mode: '0660'
+  loop:
+    - "config.json"
+    - "vpn-bot.service"
+  notify:
+    - Enable and start VPN Bot service
+
+- name: vpn-bot | Create symbolic link to .services files
+  ansible.builtin.file:
+    src: "{{ vpn_bot.dir }}/vpn-bot.service"
+    dest: "/lib/systemd/system/vpn-bot.service"
+    state: link
+    mode: '0644'
+    force: true
+  notify:
+    - Enable and start VPN Bot service
+    - Reload systemd daemon
