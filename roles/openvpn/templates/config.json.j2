@@ -1,10 +1,10 @@
 {
   "telegram_token": "{{vpn_bot.telegram_token }}",
-  "admin_id": "{{vpn_bot.admin_id }}",
+  "allowed_ids": [{{ vpn_bot.admin_id }}],
   "easy_rsa_dir": "/usr/share/easy-rsa",
   "client_config_dir": "/tmp/openvpn_clients",
   "server_cert_name": "server",
-  "vpn_server_address": "",
-  "vpn_protocol": "udp",
-  "vpn_port": "1194"
+  "vpn_server_address": "{{ vpn_server_address }}",
+  "vpn_protocol": "{{ vpn_protocol }}",
+  "vpn_port": "{{ vpn_port }}"
 }

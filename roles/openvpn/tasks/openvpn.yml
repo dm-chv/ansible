@@ -90,6 +90,7 @@
   args:
     chdir: "{{ easy_rsa_dir }}"
     creates: "{{ easy_rsa_dir }}/pki/issued/{{ item.name }}.crt"
+  with_items: "{{ users }}"
 
 - name: Ensure client-config directory exists
   file:

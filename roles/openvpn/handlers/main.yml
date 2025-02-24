@@ -21,6 +21,6 @@
 
 - name: Enable and start VPN Bot service
   systemd:
-    name: vpn_bot
+    name: vpn-bot
     enabled: yes
-    state: started
+    state: restarted
