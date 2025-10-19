@@ -1,0 +1,11 @@
+---
+vpn_server_address: "{{ vault_secrets.mega.arka_vpn_ip }}"
+vpn_protocol: "tcp"
+vpn_port: 443
+vpn_pool: 192.168.172.0
+users:
+  - name: "user1"
+vpn_bot:
+  dir: /storage/vpn-bot
+  telegram_token: "{{ vault_secrets.vpnbot_arka.telegram_token }}"
+  admin_id: "{{ vault_secrets.vpnbot_arka.admin_id }}"

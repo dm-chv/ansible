@@ -1,0 +1,17 @@
+---
+samba_shares:
+  - name: backup
+    path: /backup
+    valid_users: backup
+    writable: yes
+    browsable: yes
+  - name: files
+    path: /files
+    valid_users: backup, smbuser
+    writable: yes
+    browsable: yes
+samba_users:
+  - name: backup
+    password: "{{ vault_secrets.beton.samba_backup_pass }}"
+  - name: smbuser
+    password: "{{ vault_secrets.beton.samba_user_pass }}"

@@ -1,0 +1,27 @@
+---
+host_vars:
+  dir: /storage/1c-mega
+  containers:
+   - name: RSM
+     ports: 801
+     memory: 4096M
+   - name: RSM_ZP
+     ports: 802
+     memory: 4096M
+   - name: ROST
+     ports: 803
+     memory: 4096M
+samba_shares:
+  - name: arkada1bit2
+    path: /storage/1c-mega/1c/arkada1bit2/
+    valid_users: smbuser
+    writable: yes
+    browsable: yes
+  - name: arkada1bit
+    path: /storage/1c-mega/1c/arkada1bit/
+    valid_users: smbuser
+    writable: yes
+    browsable: yes
+samba_users:
+  - name: smbuser
+    password: "Jnrhsnmljcneg"

@@ -3,7 +3,7 @@
   community.docker.docker_container:
     name: "{{ item.name }}"
     state: stopped
-  loop: "{{ group_vars.containers }}"
+  loop: "{{ host_vars.containers }}"
 
 - name: Archive 1Cv8.1CD.zip
   community.general.archive:
@@ -12,7 +12,7 @@
     # path: "/1c/{{ item.name }}/1Cv8.1CD"
     # dest: "/1c/{{ item.name }}/1Cv8.1CD.zip"
     format: zip
-  loop: "{{ group_vars.containers }}"
+  loop: "{{ host_vars.containers }}"
 
 - name: Create local directory
   ansible.builtin.file:
@@ -21,7 +21,7 @@
     mode: '1777'
   register: local_dir
   delegate_to: localhost
-  loop: "{{ group_vars.containers }}"
+  loop: "{{ host_vars.containers }}"
 
 - name: Pull image 1c from {{ inventory_hostname }} to the localhost
   synchronize:
@@ -29,5 +29,5 @@
     src:  "{{ host_vars.dir }}/1c/{{ item.name }}/1Cv8.1CD.zip"
     # src:  "/1c/{{ item.name }}/1Cv8.1CD.zip"
     dest: "./db_pp/{{ item.name }}/1Cv8.1CD.zip"
-  loop: "{{ group_vars.containers }}"
+  loop: "{{ host_vars.containers }}"
   ignore_errors: yes

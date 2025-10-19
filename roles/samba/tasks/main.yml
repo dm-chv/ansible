@@ -5,14 +5,16 @@
       - samba
       - samba-client
     state: latest
+    update_cache: yes
 
-- name: create {{ host_vars.smbdir }} directory
+- name: Создание директорий для шар
   file:
-    path: "{{ host_vars.smbdir }}"
+    path: "{{ item.path }}"
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: '0777'
+  loop: "{{ samba_shares }}"
 
 - name: config_samba | configuring samba
   template:
@@ -21,5 +23,21 @@
     owner: root
     group: root
     mode: 0644
+  notify:
+    - Restart smbd
+
+- name: Добавление Samba пользователей
+  user:
+    name: "{{ item.name }}"
+    state: present
+    shell: /usr/sbin/nologin
+  loop: "{{ samba_users }}"
+
+- name: Установка паролей для Samba пользователей
+  command: >
+    smbpasswd -a -s {{ item.name }}
+  args:
+    stdin: "{{ item.password }}\n{{ item.password }}\n"
+  loop: "{{ samba_users }}"
   notify:
     - Restart smbd

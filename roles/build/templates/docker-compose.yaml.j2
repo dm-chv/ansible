@@ -1,5 +1,5 @@
 services:
-{% for item in group_vars.containers %}
+{% for item in host_vars.containers %}
   {{ item.name }}:
     container_name: "{{ item.name }}"
     image: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"

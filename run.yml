@@ -46,3 +46,35 @@
     - pptp
     - security
   tags: storage
+
+- name: Samba server
+  hosts: samba
+  become: true
+  roles:
+    - common
+    - samba
+  tags: samba
+
+- name: local Docker
+  hosts: localhost
+  become: true
+  roles:
+    - docker
+  tags: docker
+
+- name: Multivpn
+  hosts: multivpn
+  become: true
+  roles:
+    - common
+    - docker
+  tags: samba
+
+
+- name: utek-monitoring
+  hosts: utek
+  become: true
+  roles:
+    - common
+    - docker
+  tags: samba

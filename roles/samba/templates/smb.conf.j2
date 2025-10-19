@@ -1,11 +1,36 @@
-[{{ host_vars.namedir }}]
-    comment = Staff Folder
-    path = "{{ host_vars.smbdir }}"
-    public = no
-    writable = yes
-    read only = no
-    guest ok = no
-    create mask = 0777
-    directory mask = 0777
-    force create mode = 0777
-    force directory mode = 0777
+[global]
+workgroup = WORKGROUP
+comment = Staff Folder
+dns proxy = no
+netbios name = SAMBA-SERVER
+wins support = yes
+min protocol = SMB2
+max protocol = SMB3
+server min protocol = SMB2
+server max protocol = SMB3
+{% for share in samba_shares %}
+[{{ share.name }}]
+path = {{ share.path }}
+public = no
+writable = {{ share.writable }}
+browsable = {{ share.browsable }}
+valid users = {{ share.valid_users }}
+create mask = 0777
+directory mask = 0777
+force create mode = 0777
+force directory mode = 0777
+{% endfor %}
+
+
+
+#    comment = Staff Folder
+#    path = 
+#   public = no
+#    writable = yes
+#    read only = no
+#    guest ok = no
+#    valid users = 
+#    create mask = 0777
+#    directory mask = 0777
+#    force create mode = 0777
+#    force directory mode = 0777

@@ -1,11 +1,11 @@
-# ---
-# - name: create build {{ host_vars.dir }} directory
-#   file:
-#     path: "{{ host_vars.dir }}"
-#     state: directory
-#     owner: root
-#     group: root
-#     mode: '0755'
+---
+- name: create build {{ host_vars.dir }} directory
+  file:
+    path: "{{ host_vars.dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 # - name: Template a Dockerfile to storage
 #   ansible.builtin.template:
@@ -13,26 +13,26 @@
 #     dest: "{{ host_vars.dir }}/Dockerfile"
 #     mode: '0755'
 
-# - name: copy 1c install *.deb files
-#   copy:
-#     src: "./soft"
-#     dest: "{{ host_vars.dir }}"
-#     owner: root
-#     group: root
-#     mode: '0644'
+- name: copy 1c install *.deb files
+  copy:
+    src: "./soft"
+    dest: "{{ host_vars.dir }}"
+    owner: root
+    group: root
+    mode: '0644'
 
-# - name: build container image 1C
-#   docker_image:
-#     name: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
-#     source: build
-#     build:
-#       path: "{{ host_vars.dir }}"
-#     state: present
+- name: build container image 1C
+  docker_image:
+    name: "{{ group_vars.image_name }}:{{ group_vars.version1c }}"
+    source: build
+    build:
+      path: "{{ host_vars.dir }}"
+    state: present
   
-# - name: Remove 1c install *.deb files
-#   ansible.builtin.file:
-#     path: "{{ host_vars.dir }}/soft/*.deb"
-#     state: absent
+- name: Remove 1c install *.deb files
+  ansible.builtin.file:
+    path: "{{ host_vars.dir }}/soft/*.deb"
+    state: absent
 
 # - name: archive container image as a tar
 #   community.docker.docker_image_export:

@@ -1,0 +1,22 @@
+---
+host_vars:
+  dir: /storage/1c-mega
+  containers:
+   - name: Megapolis2023 
+     ports: 801
+     memory: 4096M
+   - name: megapolis_new
+     ports: 802
+     memory: 1280M
+   - name: megapolis_old
+     ports: 803
+     memory: 1280M
+   - name: arkada
+     ports: 804
+     memory: 1280M
+   - name: arkada2023
+     ports: 805
+     memory: 4096M
+   - name: arkadaZP
+     ports: 806
+     memory: 2048M
